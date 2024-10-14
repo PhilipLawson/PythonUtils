@@ -36,13 +36,13 @@ def create_dirs():
             # Move the file to the corresponding folder
             src_path = os.path.join(current_directory, filename)
             dest_path = os.path.join(current_directory, first_letter, filename)
-            #shutil.move(src_path, dest_path)
+            shutil.move(src_path, dest_path)
             print(f"Moving [{filename}] to: {dest_path}")
         elif first_letter.isdigit():
             # Move files starting with a digit to the "0-9" folder
             src_path = os.path.join(current_directory, filename)
             dest_path = os.path.join(current_directory, "0-9", filename)
-            #shutil.move(src_path, dest_path)
+            shutil.move(src_path, dest_path)
             print(f"Moving [{filename}] to: {dest_path}")
 
 # Parse and command-line arguments
