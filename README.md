@@ -1,2 +1,2 @@
 # PythonUtils
-A collection of Python Scripts Utilities
+A collection of Python Script Utilities
