@@ -8,8 +8,26 @@ import os
 import string
 import shutil
 import argparse
+import zipfile
 
-def create_dirs():
+# Get the script's filename
+script_name = os.path.basename(__file__)
+
+
+def unzipFiles(current_directory):
+    # Walk through the current directory
+    for filename in os.listdir(current_directory):
+        # Splits the file name path and extension
+        root, extension = os.path.splitext(filename)
+        fullPath = os.path.join(current_directory, filename)
+        if extension in ['.zip']:
+            # Unzip the file
+            with zipfile.ZipFile(fullPath, 'r') as zip_ref:
+                print(f'Unzipping the following file:- [{fullPath}]')
+                zip_ref.extractall(current_directory)
+
+
+def create_dirs(current_directory):
     # Make the 0-9 dir
     num_dir = os.path.join(current_directory, "0-9")
     os.makedirs(num_dir, exist_ok=True)
@@ -25,7 +43,7 @@ def create_dirs():
         # Splits the file name path and extension
         root, extension = os.path.splitext(filename)
         # Skip existing files, the current script or files with the specified extension(s) 
-        if os.path.isdir(os.path.join(current_directory, filename)) or filename == script_name or extension in ['.bin']:
+        if os.path.isdir(os.path.join(current_directory, filename)) or filename == script_name or extension in ['.bin', '.zip']:
             continue
 
         # Get the first letter of the filename
@@ -36,31 +54,42 @@ def create_dirs():
             # Move the file to the corresponding folder
             src_path = os.path.join(current_directory, filename)
             dest_path = os.path.join(current_directory, first_letter, filename)
+            # Move the file
             shutil.move(src_path, dest_path)
             print(f"Moving [{filename}] to: {dest_path}")
         elif first_letter.isdigit():
             # Move files starting with a digit to the "0-9" folder
             src_path = os.path.join(current_directory, filename)
             dest_path = os.path.join(current_directory, "0-9", filename)
+            # Move the file
             shutil.move(src_path, dest_path)
             print(f"Moving [{filename}] to: {dest_path}")
 
-# Parse and command-line arguments
-parser = argparse.ArgumentParser(description="Organize files by first letter.")
-parser.add_argument('--path', type=str, default=os.getcwd(), help='Path to organize (default: current directory)')
-args = parser.parse_args()
 
-# Get the directory to organize
-current_directory = args.path
-print(f"Organizing files in: {current_directory}")
-path_length = len(current_directory)
-print(f"The PATH length is currently {path_length} characters.")
+def main():
+    # Parse and command-line arguments
+    parser = argparse.ArgumentParser(description="Organize files by first letter.")
+    parser.add_argument('--path', type=str, default=os.getcwd(), help='Path to organize (default: current directory)')
+    parser.add_argument('--unzip', type=bool, default=False, help='Unzip any zip files first but do not move the zip files themselves.')
+    args = parser.parse_args()
 
-# Get the script's filename
-script_name = os.path.basename(__file__)
+    # Get the directory to organize
+    current_directory = args.path
+    print(f"Organizing files in: {current_directory}")
 
-# Create the folders
-create_dirs()
+    # Unzip the files if requested
+    if args.unzip == True:
+        print(f"Unzip arg set to:- {args.unzip}")
+        unzipFiles(current_directory)
 
-# Print complete message
-print("Folders created and files moved successfully!")
+    # Create the folders
+    if os.path.exists(current_directory):
+        create_dirs(current_directory)
+        # Print complete message
+        print("Folders created and files moved successfully!")
+    else:
+        print('Path does not exist')
+
+
+if __name__ == "__main__":
+    main()
