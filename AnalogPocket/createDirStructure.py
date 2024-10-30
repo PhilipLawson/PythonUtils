@@ -14,7 +14,7 @@ import zipfile
 script_name = os.path.basename(__file__)
 
 
-def unzipFiles(current_directory):
+def unzipFiles(current_directory, cleanZips):
     # Walk through the current directory
     for filename in os.listdir(current_directory):
         # Splits the file name path and extension
@@ -25,6 +25,9 @@ def unzipFiles(current_directory):
             with zipfile.ZipFile(fullPath, 'r') as zip_ref:
                 print(f'Unzipping the following file:- [{fullPath}]')
                 zip_ref.extractall(current_directory)
+            if cleanZips == True:
+                # Delete the zip files if flagged
+                os.remove(fullPath)
 
 
 def create_dirs(current_directory):
@@ -71,6 +74,7 @@ def main():
     parser = argparse.ArgumentParser(description="Organize files by first letter.")
     parser.add_argument('--path', type=str, default=os.getcwd(), help='Path to organize (default: current directory)')
     parser.add_argument('--unzip', type=bool, default=False, help='Unzip any zip files first but do not move the zip files themselves.')
+    parser.add_argument('--clean', type=bool, default=False, help='Optional flag to delete any zip files after extraction and files moved.')
     args = parser.parse_args()
 
     # Get the directory to organize
@@ -80,7 +84,7 @@ def main():
     # Unzip the files if requested
     if args.unzip == True:
         print(f"Unzip arg set to:- {args.unzip}")
-        unzipFiles(current_directory)
+        unzipFiles(current_directory, args.clean)
 
     # Create the folders
     if os.path.exists(current_directory):
