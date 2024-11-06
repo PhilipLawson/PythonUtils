@@ -1,3 +1,6 @@
 
 VisualStudio/vsVersions.py
 ParseTxtFile/parseTxtFile.py
+Weather_Notification/Weather_Notification.py
+Weather_Notification/sun.ico
+Screen Capture/screen_cap.py
