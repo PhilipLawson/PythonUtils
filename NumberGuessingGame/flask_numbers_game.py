@@ -1,5 +1,5 @@
 """
-Re-wroed numbers game from numberguess.py in order to work within the flask app framework
+Re-worded numbers game from numberguess.py in order to work within the flask app framework
 """
 
 from flask import Flask, request, render_template_string
